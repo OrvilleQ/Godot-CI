@@ -5,7 +5,7 @@
   - [ ] Gitlab
   - [ ] Codeberg
 - [ ] Add tools for game publish.
-  - [ ] itch.io bulster (Need to compile the binariy as itch.io didn't release bulster for Arm)
+  - [ ] itch.io butler (Need to compile the binariy as itch.io didn't release bulster for Arm)
   - [ ] SteamCMD
 - [ ] Add support for Godot .Net.
 - [ ] Implement the image as a Woodpecker CI plugin.
