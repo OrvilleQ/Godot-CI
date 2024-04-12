@@ -1,5 +1,7 @@
 when:
-  event: tag
+  branch:
+    exclude: ${CI_REPO_DEFAULT_BRANCH}
+  event: [push, pull_request]
 
 variables:
   - &base Dockerfile.base
@@ -7,19 +9,15 @@ variables:
   - &agcr ${CI_FORGE_URL:8}/orvilleq/godot-base
 
 steps:
-  - name: base-release
+  - name: base-test
     image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: *base
       platforms: *platforms
       provenance: false
-      repo:
-        - *agcr
-      tags: ${CI_COMMIT_TAG}
-      logins:
-        - registry: ${CI_FORGE_URL}
-          username: orvilleq
-          password:
-            from_secret: ag_token
+      repo: *agcr
+      tags: test
+      registry: ${CI_FORGE_URL}
+      dry-run: true
     when:
-      event: tag
+      path: *base

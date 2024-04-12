@@ -1,44 +1,26 @@
 when:
-  event: [push, pull_request]
+  branch: ${CI_REPO_DEFAULT_BRANCH}
+  event: push
 
 variables:
   - &base Dockerfile.base
+  - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &agcr ${CI_FORGE_URL:8}/orvilleq/godot-base
-  - &ghcr ghcr.io/orvilleq/godot-base
 
 steps:
   - name: base-next
     image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: *base
-      platforms: linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+      platforms: *platforms
+      provenance: false
       repo:
         - *agcr
-        - *ghcr
       tags: next
       logins:
         - registry: ${CI_FORGE_URL}
           username: orvilleq
           password:
             from_secret: ag_token
-        - registry: https://ghcr.io
-          username: orvilleq
-          password:
-            from_secret: gh_token
     when:
-      branch: ${CI_REPO_DEFAULT_BRANCH}
-      event: push
-      path: *base
-
-  - name: base-test
-    image: woodpeckerci/plugin-docker-buildx
-    settings:
-      dockerfile: *base
-      platforms: linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
-      repo: *agcr
-      tags: test
-      registry: ${CI_FORGE_URL}
-      dry-run: true
-    when:
-      event: pull_request
       path: *base
