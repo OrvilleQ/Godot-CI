@@ -14,7 +14,7 @@ ARG GODOT_VERSION=4.2.1
 ARG GODOT_RELEASE_NAME=stable
 ARG TARGETPLATFORM
 
-COPY artifact/templates/ ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}/
+COPY artifact/templates/ /root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}/
 
 RUN echo "Selecting platform for $TARGETPLATFORM" && \
     case "$TARGETPLATFORM" in \
