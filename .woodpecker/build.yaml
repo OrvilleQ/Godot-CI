@@ -3,30 +3,30 @@ when:
   event: push
 
 variables:
-  - &base Dockerfile.base
+  - &file Dockerfile
   - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
-  - &agcr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-base
+  - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
 
 steps:
   - name: artifact
     image: debian:12-slim
     commands:
-      - sh ./artifact.sh
+      - sh artifact.sh
 
-  - name: base-next
+  - name: build-next
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      dockerfile: *base
+      dockerfile: *file
       platforms: *platforms
       provenance: false
       repo:
-        - *agcr
+        - *cr
       tags: next
       logins:
         - registry: ${CI_FORGE_URL}
           username: ${CI_REPO_OWNER,,}
           password:
-            from_secret: ag_token
+            from_secret: cr_token
     depends_on: artifact
     when:
-      path: *base
+      path: *file

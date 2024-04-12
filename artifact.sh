@@ -1,23 +1,19 @@
 #!/bin/sh
 set -x
 
-# Prepare the enviroment
+# Prepare enviroment
 mkdir -p artifact
 cd artifact
-apt-get update && apt-get install -y --no-install-recommends \
+apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
     ca-certificates \
-    git \
-    git-lfs \
     unzip \
     zip \
     wget
 
-# Define the path to the godot-base Dockerfile
-BASE_DOCKERFILE="../Dockerfile.base"
-
-# Use grep to extract ENV values from the Dockerfile and use cut to parse the value
-export GODOT_VERSION=$(grep "^ENV GODOT_VERSION=" $BASE_DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
-export GODOT_RELEASE_NAME=$(grep "^ENV GODOT_RELEASE_NAME=" $BASE_DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
+# Extract ARG from Dockerfile
+DOCKERFILE="../Dockerfile"
+export GODOT_VERSION=$(grep "^ARG GODOT_VERSION=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
+export GODOT_RELEASE_NAME=$(grep "^ARG GODOT_RELEASE_NAME=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
 
 # Download godot export templates
 wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_NAME}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_NAME}_export_templates.tpz \

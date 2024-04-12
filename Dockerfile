@@ -2,8 +2,7 @@ FROM debian:12-slim
 LABEL org.opencontainers.image.authors="Orville Q. Song <orville@anislet.dev>"
 
 USER root
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y --no-install-recommends --no-install-suggests \
     ca-certificates \
     git \
     git-lfs \
@@ -11,8 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     wget
 
-ENV GODOT_VERSION=4.2.1
-ENV GODOT_RELEASE_NAME=stable
+ARG GODOT_VERSION=4.2.1
+ARG GODOT_RELEASE_NAME=stable
 ARG TARGETPLATFORM
 
 COPY artifact/templates/ ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}/
