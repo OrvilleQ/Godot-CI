@@ -11,9 +11,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zip \
     wget
 
-ARG GODOT_VERSION="4.2.1"
-ARG RELEASE_NAME="stable"
+ENV GODOT_VERSION=4.2.1
+ENV GODOT_RELEASE_NAME=stable
 ARG TARGETPLATFORM
+
+COPY artifact/templates/ ~/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}/
 
 RUN echo "Selecting platform for $TARGETPLATFORM" && \
     case "$TARGETPLATFORM" in \
@@ -30,13 +32,9 @@ RUN echo "Selecting platform for $TARGETPLATFORM" && \
         exit 1 ;; \
     esac && \
     echo "Using GODOT_PLATFORM=${GODOT_PLATFORM}" && \
-    wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_${GODOT_PLATFORM}.zip \
-    && wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${RELEASE_NAME}/Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz \
+    wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_NAME}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_NAME}_${GODOT_PLATFORM}.zip \
     && mkdir ~/.cache \
     && mkdir -p ~/.config/godot \
-    && mkdir -p ~/.local/share/godot/export_templates/${GODOT_VERSION}.${RELEASE_NAME} \
-    && unzip Godot_v${GODOT_VERSION}-${RELEASE_NAME}_${GODOT_PLATFORM}.zip \
-    && mv Godot_v${GODOT_VERSION}-${RELEASE_NAME}_${GODOT_PLATFORM} /usr/local/bin/godot \
-    && unzip Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz \
-    && mv templates/* ~/.local/share/godot/export_templates/${GODOT_VERSION}.${RELEASE_NAME} \
-    && rm -f Godot_v${GODOT_VERSION}-${RELEASE_NAME}_export_templates.tpz Godot_v${GODOT_VERSION}-${RELEASE_NAME}_${GODOT_PLATFORM}.zip
+    && unzip Godot_v${GODOT_VERSION}-${GODOT_RELEASE_NAME}_${GODOT_PLATFORM}.zip \
+    && mv Godot_v${GODOT_VERSION}-${GODOT_RELEASE_NAME}_${GODOT_PLATFORM} /usr/local/bin/godot \
+    && rm -f Godot_v${GODOT_VERSION}-${GODOT_RELEASE_NAME}_${GODOT_PLATFORM}.zip

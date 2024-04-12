@@ -6,9 +6,14 @@ when:
 variables:
   - &base Dockerfile.base
   - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
-  - &agcr ${CI_FORGE_URL:8}/orvilleq/godot-base
+  - &agcr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-base
 
 steps:
+  - name: artifact
+    image: debian:12-slim
+    commands:
+      - sh ./artifact.sh
+
   - name: base-test
     image: woodpeckerci/plugin-docker-buildx
     settings:
@@ -19,5 +24,6 @@ steps:
       tags: test
       registry: ${CI_FORGE_URL}
       dry-run: true
+    depends_on: artifact
     when:
       path: *base

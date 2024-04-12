@@ -4,9 +4,14 @@ when:
 variables:
   - &base Dockerfile.base
   - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
-  - &agcr ${CI_FORGE_URL:8}/orvilleq/godot-base
+  - &agcr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-base
 
 steps:
+  - name: artifact
+    image: debian:12-slim
+    commands:
+      - sh ./artifact.sh
+
   - name: base-release
     image: woodpeckerci/plugin-docker-buildx
     settings:
@@ -18,8 +23,7 @@ steps:
       tags: ${CI_COMMIT_TAG}
       logins:
         - registry: ${CI_FORGE_URL}
-          username: orvilleq
+          username: ${CI_REPO_OWNER,,}
           password:
             from_secret: ag_token
-    when:
-      event: tag
+    depends_on: artifact
