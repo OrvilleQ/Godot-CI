@@ -2,10 +2,15 @@ when:
   branch:
     exclude: ${CI_REPO_DEFAULT_BRANCH}
   event: [push, pull_request]
+  path:
+    include: ['.woodpecker/*', 'Dockerfile*', '*.sh']
+
 
 variables:
-  - &file Dockerfile
-  - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &standard Dockerfile
+  - &dotnet Dockerfile.dotnet
+  - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
 
 steps:
@@ -14,11 +19,11 @@ steps:
     commands:
       - sh artifact.sh
 
-  - name: build-test
+  - name: test:standard
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      dockerfile: *file
-      platforms: *platforms
+      dockerfile: *standard
+      platforms: *standard_platforms
       provenance: false
       repo: *cr
       tags: test
@@ -26,4 +31,26 @@ steps:
       dry-run: true
     depends_on: artifact
     when:
-      path: *file
+      path:
+        include:
+          - *standard
+          - '.woodpecker/*'
+          - '*.sh'
+
+  - name: test:dotnet
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *dotnet
+      platforms: *dotnet_platforms
+      provenance: false
+      repo: *cr
+      tags: test-dotnet
+      registry: ${CI_FORGE_URL}
+      dry-run: true
+    depends_on: artifact
+    when:
+      path:
+        include:
+          - *dotnet
+          - '.woodpecker/*'
+          - '*.sh'

@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -xe
 
 # Prepare enviroment
 mkdir -p artifact
@@ -19,3 +19,8 @@ export GODOT_RELEASE_CHANNEL=$(grep "^ARG GODOT_RELEASE_CHANNEL=" $DOCKERFILE | 
 wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_export_templates.tpz \
     && unzip Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_export_templates.tpz \
     && rm -f Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_export_templates.tpz
+
+# Download godot .net export templates
+wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_mono_export_templates.tpz \
+    && unzip Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_mono_export_templates.tpz -d dotnet \
+    && rm -f Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_mono_export_templates.tpz

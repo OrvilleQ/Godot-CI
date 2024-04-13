@@ -22,6 +22,7 @@ Woodpecker plugin for Godot CI/CD.
 The container image provided by this repository contain binaries from various sources.
 
 - [Godot Engine & export templates](https://github.com/godotengine/godot)
+- [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 ## Reference
 

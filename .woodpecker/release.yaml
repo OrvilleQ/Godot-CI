@@ -2,8 +2,10 @@ when:
   event: tag
 
 variables:
-  - &file Dockerfile
-  - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &standard Dockerfile
+  - &dotnet Dockerfile.dotnet
+  - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
 
 steps:
@@ -12,15 +14,31 @@ steps:
     commands:
       - sh artifact.sh
 
-  - name: release
+  - name: release:standard
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      dockerfile: *file
-      platforms: *platforms
+      dockerfile: *standard
+      platforms: *standard_platforms
       provenance: false
       repo:
         - *cr
       tags: ${CI_COMMIT_TAG}
+      logins:
+        - registry: ${CI_FORGE_URL}
+          username: ${CI_REPO_OWNER,,}
+          password:
+            from_secret: cr_token
+    depends_on: artifact
+
+  - name: release:dotnet
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *dotnet
+      platforms: *dotnet_platforms
+      provenance: false
+      repo:
+        - *cr
+      tags: ${CI_COMMIT_TAG}-dotnet
       logins:
         - registry: ${CI_FORGE_URL}
           username: ${CI_REPO_OWNER,,}

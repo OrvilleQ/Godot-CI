@@ -14,10 +14,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 ARG GODOT_VERSION=4.2.1
 ARG GODOT_RELEASE_CHANNEL=stable
-ARG GODOT_FLAVOUR=standard
+ARG GODOT_FLAVOUR=dotnet
+ARG DOTNET_SDK_VERSION=6.0.421
 ARG TARGETPLATFORM
 
-COPY artifact/templates/ /root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}/
+COPY artifact/dotnet/templates/ /root/.local/share/godot/export_templates/${GODOT_VERSION}.${GODOT_RELEASE_NAME}.mono/
 
 COPY add.sh /usr/local/bin/add
 RUN add godot

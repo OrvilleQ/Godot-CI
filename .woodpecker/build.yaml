@@ -1,10 +1,14 @@
 when:
   branch: ${CI_REPO_DEFAULT_BRANCH}
   event: push
+  path:
+    include: ['Dockerfile*']
 
 variables:
-  - &file Dockerfile
-  - &platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &standard Dockerfile
+  - &dotnet Dockerfile.dotnet
+  - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
+  - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
 
 steps:
@@ -13,11 +17,11 @@ steps:
     commands:
       - sh artifact.sh
 
-  - name: build-next
+  - name: next:standard
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      dockerfile: *file
-      platforms: *platforms
+      dockerfile: *standard
+      platforms: *standard_platforms
       provenance: false
       repo:
         - *cr
@@ -29,4 +33,22 @@ steps:
             from_secret: cr_token
     depends_on: artifact
     when:
-      path: *file
+      path: *standard
+
+  - name: next:dotnet
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *dotnet
+      platforms: *dotnet_platforms
+      provenance: false
+      repo:
+        - *cr
+      tags: next-dotnet
+      logins:
+        - registry: ${CI_FORGE_URL}
+          username: ${CI_REPO_OWNER,,}
+          password:
+            from_secret: cr_token
+    depends_on: artifact
+    when:
+      path: *dotnet
