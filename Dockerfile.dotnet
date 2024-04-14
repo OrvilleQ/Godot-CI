@@ -1,16 +1,5 @@
-FROM debian:12-slim
-LABEL org.opencontainers.image.authors="Orville Q. Song <orville@anislet.dev>"
-
-USER root
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
-    git \
-    git-lfs \
-    unzip \
-    zip \
-    wget \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+ARG FROM_TARGET
+FROM ${FROM_TARGET}
 
 ARG GODOT_VERSION=4.2.1
 ARG GODOT_RELEASE_CHANNEL=stable

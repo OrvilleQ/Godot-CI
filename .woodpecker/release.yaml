@@ -2,8 +2,10 @@ when:
   event: tag
 
 variables:
+  - &base Dockerfile.base
   - &standard Dockerfile
   - &dotnet Dockerfile.dotnet
+  - &base_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
@@ -14,6 +16,25 @@ steps:
     commands:
       - sh artifact.sh
 
+  - name: release:base
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *base
+      platforms: *base_platforms
+      provenance: false
+      repo:
+        - *cr
+      tags:
+        - base
+        - ${CI_COMMIT_TAG}-base
+      logins:
+        - registry: ${CI_FORGE_URL}
+          username: ${CI_REPO_OWNER,,}
+          password:
+            from_secret: cr_token
+    depends_on:
+      - artifact
+
   - name: release:standard
     image: woodpeckerci/plugin-docker-buildx
     settings:
@@ -22,13 +43,18 @@ steps:
       provenance: false
       repo:
         - *cr
-      tags: ${CI_COMMIT_TAG}
+      tags:
+        - latest
+        - ${CI_COMMIT_TAG}
       logins:
         - registry: ${CI_FORGE_URL}
           username: ${CI_REPO_OWNER,,}
           password:
             from_secret: cr_token
-    depends_on: artifact
+      build_args: FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
+    depends_on:
+      - artifact
+      - release:base
 
   - name: release:dotnet
     image: woodpeckerci/plugin-docker-buildx
@@ -38,10 +64,15 @@ steps:
       provenance: false
       repo:
         - *cr
-      tags: ${CI_COMMIT_TAG}-dotnet
+      tags:
+        - latest-dotnet
+        - ${CI_COMMIT_TAG}-dotnet
       logins:
         - registry: ${CI_FORGE_URL}
           username: ${CI_REPO_OWNER,,}
           password:
             from_secret: cr_token
-    depends_on: artifact
+      build_args: FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
+    depends_on:
+      - artifact
+      - release:base

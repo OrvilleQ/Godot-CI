@@ -7,17 +7,38 @@ when:
 
 
 variables:
+  - &base Dockerfile.base
   - &standard Dockerfile
   - &dotnet Dockerfile.dotnet
+  - &base_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
-  - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
+  - &cr registry:5000/godot-ci
+
+services:
+  - name: registry
+    image: registry:2
+    ports:
+      - 5000
 
 steps:
   - name: artifact
     image: debian:12-slim
     commands:
       - sh artifact.sh
+
+  - name: test:base
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *base
+      platforms: *base_platforms
+      provenance: false
+      repo: *cr
+      tags: test-base
+      registry: http://registry:5000
+      buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
+    depends_on:
+      - artifact
 
   - name: test:standard
     image: woodpeckerci/plugin-docker-buildx
@@ -27,13 +48,18 @@ steps:
       provenance: false
       repo: *cr
       tags: test
-      registry: ${CI_FORGE_URL}
+      registry: http://registry:5000
+      buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
+      build_args: FROM_TARGET=registry:5000/godot-ci:test-base
       dry-run: true
-    depends_on: artifact
+    depends_on:
+      - artifact
+      - test:base
     when:
       path:
         include:
           - *standard
+          - *base
           - '.woodpecker/*'
           - '*.sh'
 
@@ -45,12 +71,17 @@ steps:
       provenance: false
       repo: *cr
       tags: test-dotnet
-      registry: ${CI_FORGE_URL}
+      registry: http://registry:5000
+      buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
+      build_args: FROM_TARGET=registry:5000/godot-ci:test-base
       dry-run: true
-    depends_on: artifact
+    depends_on:
+      - artifact
+      - test:base
     when:
       path:
         include:
           - *dotnet
+          - *base
           - '.woodpecker/*'
           - '*.sh'
