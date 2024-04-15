@@ -51,7 +51,8 @@ steps:
           username: ${CI_REPO_OWNER,,}
           password:
             from_secret: cr_token
-      build_args: FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
+      build_args:
+        - FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
     depends_on:
       - artifact
       - release:base
@@ -72,7 +73,8 @@ steps:
           username: ${CI_REPO_OWNER,,}
           password:
             from_secret: cr_token
-      build_args: FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
+      build_args:
+        - FROM_TARGET=${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci:${CI_COMMIT_TAG}-base
     depends_on:
       - artifact
       - release:base

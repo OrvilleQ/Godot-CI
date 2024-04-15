@@ -14,7 +14,7 @@ Woodpecker plugin for Godot CI/CD.
 | linux/arm/v7   | ✓              | ✓          | ✓[^2]          | ✗[^3]    |
 
 [^1]: Linux 32-bits is not supported by Microsoft and .NET.
-[^2]: Unexpected issues may be encountered as bulter does not explicitly state that it supports Arm.
+[^2]: Unexpected issues may be encountered as butler does not explicitly state that it supports Arm.
 [^3]: SteamCMD does not support Arm.
 
 ## Binary
@@ -23,11 +23,16 @@ The container image provided by this repository contain binaries from various so
 
 - [Godot Engine & export templates](https://github.com/godotengine/godot)
 - [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- [itch.io butler](https://github.com/itchio/butler) (Compiled at image build time)
+- [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD)
 
 ## Reference
 
 - [abarichello/godot-ci](https://github.com/abarichello/godot-ci)
+- [steamcmd/docker](https://github.com/steamcmd/docker)
 
 ## License
 
-[MIT License](LICENSE).
+All source code in this repository is licensed under the [MIT License](LICENSE).
+
+By building or using the linux/amd64 or linux/386 variants of the container, you automatically agree to the [Steam Install Agreement](SteamCMD.LICENSE).

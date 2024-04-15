@@ -4,10 +4,10 @@
   - [ ] Github & Docker Hub
   - [ ] Gitlab
   - [ ] Codeberg
-- [ ] Add tools for game publish.
-  - [ ] itch.io butler (Need to compile the binariy as itch.io didn't release bulster for Arm)
-  - [ ] SteamCMD
-- [ ] Add support for Godot .Net.
+- [x] Add tools for game publish.
+  - [x] itch.io butler (Need to compile the binariy as itch.io didn't release butler for Arm)
+  - [x] SteamCMD
+- [x] Add support for Godot .Net.
 - [ ] Implement the image as a Woodpecker CI plugin.
 - [ ] Support more CI engine.
   - [ ] Github Action

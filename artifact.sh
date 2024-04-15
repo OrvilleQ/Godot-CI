@@ -10,10 +10,10 @@ apt-get update && apt-get install -y --no-install-recommends --no-install-sugges
     zip \
     wget
 
-# Extract ARG from Dockerfile
-DOCKERFILE="../Dockerfile"
-export GODOT_VERSION=$(grep "^ARG GODOT_VERSION=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
-export GODOT_RELEASE_CHANNEL=$(grep "^ARG GODOT_RELEASE_CHANNEL=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
+# Extract ENV from Dockerfile
+DOCKERFILE="../Dockerfile.base"
+export GODOT_VERSION=$(grep "^ENV GODOT_VERSION=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
+export GODOT_RELEASE_CHANNEL=$(grep "^ENV GODOT_RELEASE_CHANNEL=" $DOCKERFILE | cut -d '=' -f2 | sed 's/"//g')
 
 # Download godot export templates
 wget --no-verbose https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}/Godot_v${GODOT_VERSION}-${GODOT_RELEASE_CHANNEL}_export_templates.tpz \

@@ -50,7 +50,8 @@ steps:
       tags: test
       registry: http://registry:5000
       buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
-      build_args: FROM_TARGET=registry:5000/godot-ci:test-base
+      build_args:
+        - FROM_TARGET=registry:5000/godot-ci:test-base
       dry-run: true
     depends_on:
       - artifact
@@ -73,7 +74,8 @@ steps:
       tags: test-dotnet
       registry: http://registry:5000
       buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
-      build_args: FROM_TARGET=registry:5000/godot-ci:test-base
+      build_args:
+        - FROM_TARGET=registry:5000/godot-ci:test-base
       dry-run: true
     depends_on:
       - artifact
