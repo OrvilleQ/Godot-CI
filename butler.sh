@@ -12,13 +12,16 @@ build() {
 
     CGO_ENABLED=1 go build -ldflags "-X ${BUTLER_BUILDINFO}.Version=${BUTLER_VERSION} -X ${BUTLER_BUILDINFO}.BuiltAt=${BUTLER_BUILTAT} -X ${BUTLER_BUILDINFO}.Commit=${BUTLER_COMMIT} -w -s"
 
-    if [ "$GODOT_CI_BUILDING_STAGE" == "test" ]; then
-        echo "Skipping upload."
-    else
-        echo "Uploading new build..."
-        curl -s --upload-file butler -H "Authorization: token ${GODOT_CI_BUTLER_BR_ACCESS_TOKEN}" \
-            "${GODOT_CI_BUTLER_BR}/${BUTLER_VERSION}/${BUTLER_NAME}"
-    fi
+    case $GODOT_CI_BUILDING_STAGE in
+        "test")
+            echo "Skipping upload."
+            ;;
+        *)
+            echo "Uploading new build..."
+            curl -s --upload-file butler -H "Authorization: token ${GODOT_CI_BUTLER_BR_ACCESS_TOKEN}" \
+                "${GODOT_CI_BUTLER_BR}/${BUTLER_VERSION}/${BUTLER_NAME}"
+            ;;
+    esac
 }
 
 download() {
