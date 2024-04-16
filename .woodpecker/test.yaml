@@ -14,6 +14,7 @@ variables:
   - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr registry:5000/godot-ci
+  - &br ${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/godot-ci-butler
 
 services:
   - name: registry
@@ -37,6 +38,15 @@ steps:
       tags: test-base
       registry: http://registry:5000
       buildkit_config: "[registry.\"registry:5000\"]\n  http = true"
+      build_args_from_env:
+        - GODOT_CI_BUTLER_BR
+        - GODOT_CI_BUTLER_BR_ACCESS_TOKEN
+        - GODOT_CI_BUILDING_STAGE
+    environment:
+      GODOT_CI_BUTLER_BR: *br
+      GODOT_CI_BUTLER_BR_ACCESS_TOKEN:
+        from_secret: br_token
+      GODOT_CI_BUILDING_STAGE: test
     depends_on:
       - artifact
 

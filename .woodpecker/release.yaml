@@ -9,6 +9,7 @@ variables:
   - &standard_platforms linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7
   - &dotnet_platforms linux/amd64,linux/arm64/v8,linux/arm/v7
   - &cr ${CI_FORGE_URL:8}/${CI_REPO_OWNER,,}/godot-ci
+  - &br ${CI_FORGE_URL}/api/packages/${CI_REPO_OWNER}/generic/godot-ci-butler
 
 steps:
   - name: artifact
@@ -32,6 +33,13 @@ steps:
           username: ${CI_REPO_OWNER,,}
           password:
             from_secret: cr_token
+      build_args_from_env:
+        - GODOT_CI_BUTLER_BR
+        - GODOT_CI_BUTLER_BR_ACCESS_TOKEN
+    environment:
+      GODOT_CI_BUTLER_BR: *br
+      GODOT_CI_BUTLER_BR_ACCESS_TOKEN:
+        from_secret: br_token
     depends_on:
       - artifact
 

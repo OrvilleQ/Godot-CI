@@ -1,5 +1,10 @@
 FROM golang:1.14 as butler-builder
 
+ARG GODOT_CI_BUTLER_BR
+ARG GODOT_CI_BUTLER_BR_ACCESS_TOKEN
+ARG GODOT_CI_BUILDING_STAGE
+ARG TARGETPLATFORM
+
 COPY Dockerfile.base Dockerfile.base
 COPY butler.sh butler.sh
 
