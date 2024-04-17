@@ -62,9 +62,7 @@ main() {
     esac
 
     BUTLER_EXISTENCE=$(checkButlerExistence)
-    
 
-    
     if [ "$BUTLER_EXISTENCE" -eq 206 ]; then
         download
     elif [ "$BUTLER_EXISTENCE" -eq 404 ]; then
