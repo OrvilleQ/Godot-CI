@@ -17,6 +17,12 @@ Woodpecker plugin for Godot CI/CD.
 [^2]: Unexpected issues may be encountered as butler does not explicitly state that it supports Arm.
 [^3]: SteamCMD does not support Arm.
 
+## Building
+
+The Dockerfile and corresponding Woodpecker workflow in this repository are currently written specifically to run on a Woodpecker CI connected to a gitea/forgejo instance with package registry enabled, without the ability to build the container locally.
+
+If you want to build it yourself, just fork this repository, enable woodpecker on it, and set secrets for the container registry (cr_token) and the binary registry (br_token), and everything should work automaticlly.
+
 ## Binary
 
 The container image provided by this repository contain binaries from various sources.
